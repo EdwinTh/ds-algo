@@ -1,0 +1,128 @@
+---
+title: "Chapter2 - exercises"
+format: html
+jupyter: python3
+---
+
+## R-4.1
+
+```{python}
+def find_max(S, max_val):
+  if len(S) == 0:
+    return(max_val)
+  max_val = max_val if max_val > S[0] else S[0]
+  return find_max(S[1:], max_val)
+  
+find_max([1, 5, 2, 4, 6, 2, 98], 1)
+```
+
+## C-4.11
+
+```{python}
+def unique(S, seen = []):
+  if len(S) == 0:
+    return True
+  if S[0] in seen:
+    return False
+  else:
+    seen.append(S[0])
+  return unique(S[1:], seen)
+unique([1,2,3,45,2])
+```
+
+## C-4.12
+
+```{python}
+def prod(m, n):
+  if n == 1:
+    return m
+  return m + prod(m, n-1)
+prod(8, 9)
+```
+
+# C-4.15
+  
+https://stackoverflow.com/questions/26332412/python-recursive-function-to-display-all-subsets-of-given-set
+```{python}
+def subsets(S): 
+  if S == []:
+    return [[]]
+  
+  x = subsets(S[1:])
+  return x + [[S[0]] + y for y in x]
+
+subsets(['a', 'b', 'c', 'd', 'e', 'f'])
+```
+
+Analysis of the working of the above.
+1) As long as there are still values in S nothing gets done, we first go all the way to the base case. So we'll start with a list containing an empty list as its first element.
+
+2) Then we will work our way back, starting with the last element in S. x is then the list with just the empty list in it. S[0] (which is the last element in original S) is than concatenated with all the original cases in x. Which is now only the empty list. x = [[], ['f']].
+
+3) Next step up is the call on ['e', 'f']. We'll take the first element 'e' and combine it with all that is in x going in this recursive step. Creating [['e'], ['e', 'f']]. Which is combined with what we already have. 
+
+....
+
+We'll go all the way up to the full set, at which we combine 'a' with all that we had already. This way we are ensured to find all subsets.
+
+# C 4-16
+```{python}
+def rev_str(s):
+  if len(s) < 2:
+    return s
+  return s[-1] + rev_str(s[1:-1]) + s[0]
+
+rev_str("pots&pans")
+```
+
+# C 4-17
+```{python}
+def is_palindrome(s):
+  if len(s) < 2:
+    return True
+  if s[0] != s[-1]:
+    return False
+  return is_palindrome(s[1:-1])
+
+is_palindrome("racecar")
+```
+
+# C 4-18
+
+```{python}
+def more_vowels(s, cnt_c=0, cnt_v=0):
+  VOWELS = ['a', 'e', 'i', 'o', 'u']
+  if len(s) == 0:
+    return cnt_v > cnt_c
+  return more_vowels(s[1:], cnt_c + (s[0] not in VOWELS), cnt_v + (s[0] in VOWELS))
+more_vowels("jemoeder")
+```
+
+# C 4-19
+```{python}
+def odd_before_even(S, o=[], e=[]):
+  if len(S) == 0:
+    return o + e
+  if S[0] % 2 == 0:
+    e.append(S[0])
+  else:
+    o.append(S[0])
+  return odd_before_even(S[1:], o, e)
+
+odd_before_even([1,2,3,4,5,6])
+```
+
+# C 4-20
+
+```{python}
+def before_k_in_front(S, k, ind=1):
+  if ind == len(S):
+    return S
+  if S[ind] < k:
+    el = S[ind]
+    S = [s for i,s in enumerate(S) if i != ind]
+    S = [el] + S
+  return before_k_in_front(S, k, ind + 1)
+
+before_k_in_front([1,9, 31, 45, 6, 18], 20)
+```
