@@ -1,0 +1,127 @@
+## R-5.1
+
+```{python}
+n = 100
+import sys
+data = []
+for k in range(n):
+    a = len(data)
+    b = sys.getsizeof(data)
+    print(f'Lengh: {a}; Size in bytes {b}')
+    data.append(None)
+```
+
+## R-5.2
+```{python}
+n = 1000
+import sys
+data = []
+last_b = 0
+for k in range(n):
+    a = len(data)
+    b = sys.getsizeof(data)
+    if b != last_b:
+        print(f'Lentgh: {a}; Size in bytes {b}')
+    data.append(None)
+    last_b = b
+```
+
+## R-5.3
+
+```{python}
+n = 100
+data = [None] * n
+last_b = 0
+for k in range(n, 1, -1):
+    a = len(data)
+    b = sys.getsizeof(data)
+    if b != last_b:
+        print(f'Lentgh: {a}; Size in bytes {b}')
+    data.pop()
+    last_b = b
+```
+
+```{python}
+import ctypes                                      # provides low-level arrays
+
+class DynamicArray:
+  """A dynamic array class akin to a simplified Python list."""
+
+  def __init__(self):
+    """Create an empty array."""
+    self._n = 0                                  
+    self._capacity = 1                           
+    self._A = self._make_array(self._capacity)   
+    
+  def __len__(self):
+    """Return number of elements stored in the array."""
+    return self._n
+    
+  def __getitem__(self, k):
+    """Return element at index k."""
+    if not k < abs(self._n):
+      raise IndexError('invalid index')
+    if k < 0:
+      k = self._n + k
+    return self._A[k]    
+  
+  def append(self, obj):
+    """Add object to end of the array."""
+    if self._n == self._capacity:                
+      self._resize(2 * self._capacity)           
+    self._A[self._n] = obj
+    self._n += 1
+
+  def _resize(self, c, k_insert=None):                          
+    """Resize internal array to capacity c."""
+    B = self._make_array(c)
+    if k_insert is not None:             
+      for k in range(self._n):
+        if k == k_insert:
+          B[k] = None
+        elif k > k_insert:
+          B[k+1] = self._A[k]
+        else:
+          B[k] = self._A[k]
+    else:
+      for k in range(self._n):
+        B[k] = self._A[k]
+    self._A = B                                  
+    self._capacity = c
+
+  def _make_array(self, c):                      
+     """Return new array with capacity c."""   
+     return (c * ctypes.py_object)()             
+
+  def insert(self, k, value):
+    """Insert value at index k, shifting subsequent values rightward."""
+    # (for simplicity, we assume 0 <= k <= n in this verion)
+    if self._n == self._capacity:                  # not enough room
+      self._resize(2 * self._capacity, k_insert=k)             # so double capacity      
+    self._A[k] = value                             # store newest element
+    self._n += 1
+
+  def remove(self, value):
+    """Remove first occurrence of value (or raise ValueError)."""
+    # note: we do not consider shrinking the dynamic array in this version
+    for k in range(self._n):
+      if self._A[k] == value:              # found a match!
+        for j in range(k, self._n - 1):    # shift others to fill gap
+          self._A[j] = self._A[j+1]
+        self._A[self._n - 1] = None        # help garbage collection
+        self._n -= 1                       # we have one less item
+        return                             # exit immediately
+    raise ValueError('value not found')    # only reached if no match
+
+```
+
+## C-5.13
+
+```{python}
+from random import uniform
+def my_shuf(l):
+  unif = [uniform(0,1) for x in range(len(l))]
+  unif_s = sorted(unif)
+  return [l[unif.index(u)] for u in unif_s]
+  
+```
